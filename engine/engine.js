@@ -89,7 +89,7 @@ function initViewport(items){
 function drawScene(items){
 	gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix); // Was previously setUniforms() line 1
 	for(i=0;i<items.length;i++){
-		mat4.translate(items[i].mvMatrix, items[i].translation);
+		mat4.translate(items[i].mvMatrix, items[i].translation); // This is what line 111 is talking about, and could be replaced
 		gl.bindBuffer(gl.ARRAY_BUFFER,items[i].buffer); // Here it uses it
 		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, items[i].buffer.itemSize, gl.FLOAT, false, 0, 0); // and here
 		gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, items[i].mvMatrix); // Was previously setUniforms() line 2
@@ -106,8 +106,9 @@ function initData(data){
          1.0, -1.0,  0.0
         ],
         translation:[-1.0, 0.0, -7.0],
-        mvMatrix:mat4.create(),
+        mvMatrix:mat4.create(), // Creates effectively a translation buffer, to use the translation
 	};
+	// It's possible could put the translation into mvMatrix here, but for now the translation is done within drawScene();
 	data[0].buffer=makeBuffer(data[0].position); // Here data is put into the buffer along with the buffer being created, is possible since this is reoccuring, could put it into the drawScene() function
 
 	data[1] = {
